@@ -283,13 +283,15 @@ kbap:
       enabled: true
       provider: ${INGREDIENT_DECISION_LLM_PROVIDER:anthropic}
       api-key: ${ANTHROPIC_API_KEY:}
-      model: ${INGREDIENT_DECISION_MODEL:claude-haiku-5-5}
+      # 11/15 실호출 측정: Haiku 는 같은 음식(순두부찌개)을 두 번 판정하자 해산물 코드를 한 번 통째로 빠뜨렸다(false-safe 위험).
+      # Sonnet 은 두 번 모두 일관 — 관리자 소급 판정 전용이라 호출량이 적어 Sonnet 으로 둔다. 실측 18~22초라 timeout 을 60s 로 늘린다.
+      model: ${INGREDIENT_DECISION_MODEL:claude-sonnet-5-5}
       reasoning-effort: ${INGREDIENT_DECISION_REASONING_EFFORT:low}
       max-retries: 0
-      timeout: 20s
+      timeout: 60s
       pricing:
-        input-usd-per-million-tokens: 0.1
-        output-usd-per-million-tokens: 0.5
+        input-usd-per-million-tokens: 2.0
+        output-usd-per-million-tokens: 10.0
       openai:
         api-key: ${OPENAI_API_KEY:}
         model: gpt-5-nano
